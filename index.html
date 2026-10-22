@@ -198,6 +198,29 @@ html{background:#bfe4f8}
 .gname{margin-bottom:16px;padding:10px 16px!important;font-size:.95rem}
 .gname b{font-family:'Baloo 2';font-size:1.35rem;color:var(--red);display:block;line-height:1.2}
 .credit{background:#4d2b14;color:rgba(251,241,217,.8);text-align:center;font-size:.8rem;padding:14px 18px calc(14px + env(safe-area-inset-bottom));position:relative;z-index:2}
+.wh{margin:24px 0 10px;font-family:'Baloo 2';font-size:1.1rem;color:var(--yellow)}
+.wishes{max-height:340px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;text-align:left;display:flex;flex-direction:column;gap:10px;padding:2px 6px 2px 0}
+.wishes::-webkit-scrollbar{width:5px}.wishes::-webkit-scrollbar-thumb{background:var(--yellow);border-radius:9px}
+.wish{background:var(--paper);color:var(--ink);border-radius:14px;padding:10px 14px;border-left:6px solid var(--red);animation:wi .5s both}
+.wish b{font-family:'Baloo 2';font-size:1.05rem}
+.wish .bd{font-size:.7rem;background:#3fae5a;color:#fff;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}.wish .bd.n{background:#8a8a8a}
+.wish p{margin-top:2px;font-size:.95rem;line-height:1.45;word-break:break-word;white-space:pre-wrap}
+.wish small{display:block;opacity:.6;font-size:.72rem;margin-top:3px}
+.empty{opacity:.8;text-align:center;padding:14px}
+@keyframes wi{from{opacity:0;transform:translateY(10px)}}
+.wishes{-webkit-mask-image:linear-gradient(transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(transparent,#000 9%,#000 91%,transparent);padding-block:14px}
+.toast{z-index:90}
+#adm{position:fixed;inset:0;z-index:70;background:rgba(30,15,5,.65);display:flex;align-items:center;justify-content:center;padding:16px}
+#adm[hidden]{display:none}
+.ad-box{background:var(--paper);color:var(--ink);border:3px dashed var(--wood);border-radius:18px;padding:22px 18px 18px;width:100%;max-width:420px;max-height:90dvh;overflow:auto;overscroll-behavior:contain;position:relative;text-align:left;box-shadow:0 10px 0 rgba(0,0,0,.3);animation:pin .35s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pin{from{transform:scale(.88);opacity:0}}
+.ad-box h3{font-family:'Baloo 2';font-size:1.4rem;color:var(--red)}
+.ad-box h4{font-family:'Baloo 2';margin:18px 0 6px}
+.ad-box label{display:block;font-weight:700;font-size:.9rem;margin:12px 0 4px}
+.ad-box input{width:100%;padding:11px 12px;border-radius:10px;border:2px solid var(--wood);background:#fff;font:inherit;font-size:16px}
+.ad-x{position:absolute;right:10px;top:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--wood);color:#fff;font-size:1rem;cursor:pointer}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dotted var(--wood)}
+.ad-box .btns{justify-content:flex-start}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ch,.blocks b{opacity:1}#flyer{display:none!important}}
 </style>
 </head>
@@ -283,26 +306,44 @@ html{background:#bfe4f8}
 <section id="end">
   <div class="wrap rev">
     <h2>Jangan lupa hadir ya! 💛</h2>
-    <p style="margin:12px 0 10px">Konfirmasi kehadiranmu, ya. Pesan akan terbuka di WhatsApp.</p>
+    <p style="margin:12px 0 10px">Tinggalkan ucapan dan doa untuk Nayra 💛</p>
     <div class="rsvp">
-      <label for="rn">Nama</label><input id="rn" autocomplete="name">
+      <label for="rn">Nama</label><input id="rn" maxlength="40" autocomplete="name">
       <label for="ra">Kehadiran</label>
       <select id="ra"><option>Hadir</option><option>Belum bisa hadir</option></select>
-      <label for="rj">Jumlah orang yang datang</label><input id="rj" type="number" min="1" max="10" value="1">
-      <label for="rm">Ucapan untuk Nayra (opsional)</label><textarea id="rm"></textarea>
-      <button class="btn y" id="wa">Kirim via WhatsApp</button>
+      <label for="rm">Ucapan</label><textarea id="rm" maxlength="200"></textarea>
+      <button class="btn y" id="kirim">Kirim Ucapan</button>
     </div>
+    <h3 class="wh">Ucapan dari teman-teman <span id="wc"></span></h3>
+    <div class="wishes" id="wl" aria-live="polite"></div>
+    <small id="wn" class="tap"></small>
+    <div style="height:22px"></div>
     <button class="btn big" id="fly">🎈 Terbangkan Balon!</button><br>
     <button class="btn s" id="share" style="margin-top:22px">🔗 Bagikan undangan</button>
     <p style="margin-top:34px;opacity:.8">Dengan cinta, keluarga Nayra</p>
   </div>
 </section>
 
+<div id="adm" role="dialog" aria-modal="true" aria-label="Pembuat link tamu" hidden>
+  <div class="ad-box">
+    <button class="ad-x" id="admX" aria-label="Tutup">✕</button>
+    <h3>Buat Link Tamu</h3>
+    <label for="gn">Nama tamu</label>
+    <input id="gn" maxlength="40" placeholder="mis. Akbar Putra" autocomplete="off">
+    <label for="gl">Link undangan</label>
+    <input id="gl" readonly>
+    <div class="btns" style="margin-top:14px"><button class="btn s y" id="gcp">📋 Salin Link</button><button class="btn s" id="gms">💬 Salin Pesan</button><a class="btn s" id="gwa" target="_blank" rel="noopener">WhatsApp</a></div>
+    <h4>Riwayat nama</h4>
+    <div id="ghist"></div>
+  </div>
+</div>
 <footer class="credit">Made by Initial A Project | Akbar</footer>
 
 <script>
 // === EDIT DI SINI ===
-const WA_NUMBER = "628xxxxxxxxxx"; // nomor WA tanpa + dan 0 di depan
+const SUPABASE_URL = ""; // contoh: https://abcdxyz.supabase.co
+const SUPABASE_KEY = ""; // anon public key (BUKAN service_role)
+const ADMIN_PIN = ""; // opsional: isi PIN agar panel link terkunci (kosong = tanpa PIN)
 // ====================
 const $=id=>document.getElementById(id),bgm=$('bgm');
 const EVT={title:"Ulang Tahun Nayra ke-2",loc:"Burger King Buah Batu, Bandung",start:"20261108T080000Z",end:"20261108T100000Z"}; // 15:00-17:00 WIB
@@ -318,13 +359,47 @@ $('ics').onclick=()=>{
   const ics=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nDTSTART:${EVT.start}\r\nDTEND:${EVT.end}\r\nSUMMARY:${EVT.title}\r\nLOCATION:${EVT.loc}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='ulang-tahun-nayra.ics';a.click()};
 
-// RSVP via WA
-$('wa').onclick=()=>{
-  const n=$('rn').value.trim();if(!n){toast('Isi nama dulu ya');$('rn').focus();return}
-  const hadir=$('ra').value==='Hadir';
-  let t=`Halo, saya ${n}. ${hadir?`Saya akan hadir di ulang tahun Nayra ke-2 (${$('rj').value} orang) 🤠`:'Mohon maaf, saya belum bisa hadir di ulang tahun Nayra ke-2.'}`;
-  const m=$('rm').value.trim();if(m)t+=`\n\nUcapan: ${m}`;
-  open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(t)}`,'_blank')};
+// ===== Buku ucapan =====
+const SB=SUPABASE_URL.replace(/\/$/,''),LIVE=!!(SB&&SUPABASE_KEY),H={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'};
+let wpos=0,wloop=0,wpause=0,wsig='';
+const ago=d=>{const m=(Date.now()-new Date(d))/6e4;if(m<1)return'baru saja';if(m<60)return Math.floor(m)+' menit lalu';if(m<1440)return Math.floor(m/60)+' jam lalu';return Math.floor(m/1440)+' hari lalu'};
+function drawWishes(list){
+  const el=$('wl'),keep=el.scrollTop;el.textContent='';wloop=0;$('wc').textContent=list.length?'('+list.length+')':'';
+  if(!list.length){const e=document.createElement('div');e.className='empty';e.textContent='Belum ada ucapan. Jadi yang pertama, yuk!';el.appendChild(e);return}
+  list.forEach(w=>{const d=document.createElement('div');d.className='wish';
+    const b=document.createElement('b');b.textContent=w.nama;
+    const g=document.createElement('span');g.className='bd'+(w.hadir==='Hadir'?'':' n');g.textContent=w.hadir==='Hadir'?'Hadir':'Belum bisa hadir';
+    const p=document.createElement('p');p.textContent=w.pesan;
+    const t=document.createElement('small');t.textContent=ago(w.created_at);
+    d.append(b,g,p,t);el.appendChild(d)});
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&list.length>2&&el.scrollHeight>el.clientHeight+16){
+    const items=[...el.children];
+    items.forEach(c=>{const k=c.cloneNode(true);k.setAttribute('aria-hidden','true');k.style.animation='none';el.appendChild(k)});
+    wloop=el.children[items.length].offsetTop-el.children[0].offsetTop}
+  el.scrollTop=keep;wpos=keep}
+const lsGet=()=>{try{return JSON.parse(localStorage.getItem('ucapan')||'[]')}catch(e){return[]}};
+async function loadWishes(){
+  try{
+    if(LIVE){const r=await fetch(SB+'/rest/v1/ucapan?select=nama,pesan,hadir,created_at&order=created_at.desc&limit=100',{headers:H});if(!r.ok)throw 0;
+      const l=await r.json(),sg=JSON.stringify(l);if(sg!==wsig){wsig=sg;drawWishes(l)}$('wn').textContent=''}
+    else{drawWishes(lsGet());$('wn').textContent='Mode contoh: ucapan baru hanya tersimpan di HP ini. Hubungkan database agar semua tamu bisa melihatnya.'}
+  }catch(e){$('wn').textContent='Ucapan belum bisa dimuat. Coba lagi nanti.'}}
+let sending=false,lastSend=0;
+$('kirim').onclick=async()=>{
+  const nama=$('rn').value.trim().slice(0,40),pesan=$('rm').value.trim().slice(0,200),hadir=$('ra').value;
+  if(!nama){toast('Isi nama dulu ya');$('rn').focus();return}
+  if(!pesan){toast('Tulis ucapannya dulu ya');$('rm').focus();return}
+  if(sending)return;
+  if(Date.now()-lastSend<8000){toast('Tunggu sebentar ya');return}
+  sending=true;$('kirim').textContent='Mengirim...';
+  try{
+    if(LIVE){const r=await fetch(SB+'/rest/v1/ucapan',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify({nama,pesan,hadir})});if(!r.ok)throw 0}
+    else{const l=lsGet();l.unshift({nama,pesan,hadir,created_at:new Date().toISOString()});try{localStorage.setItem('ucapan',JSON.stringify(l.slice(0,100)))}catch(e){}}
+    lastSend=Date.now();$('rm').value='';toast('Terima kasih atas ucapannya! 💛');burst(innerWidth/2,innerHeight*.6,28,null,['❤️','💛','⭐']);
+    wsig='';$('wl').scrollTop=0;wpos=0;await loadWishes();$('wl').scrollTop=0;wpos=0;
+  }catch(e){toast('Gagal mengirim. Coba lagi ya')}
+  sending=false;$('kirim').textContent='Kirim Ucapan'};
+loadWishes();setInterval(()=>{if(!document.hidden&&LIVE)loadWishes()},30000);
 
 // bagikan
 $('share').onclick=async()=>{
@@ -508,6 +583,39 @@ if(!RM)requestAnimationFrame(frame);
     burst(e.clientX,e.clientY,14,null,['⭐','✨','💛']);toast('Howdy, partner! 🤠')})})();
 
 // open
+// ===== Ucapan: scroll otomatis =====
+(()=>{const el=$('wl');let last=0,vis=false;
+  new IntersectionObserver(e=>vis=e[0].isIntersecting,{threshold:.2}).observe(el);
+  const bump=()=>{wpause=performance.now()+2800};
+  ['touchstart','touchmove','pointerdown','wheel'].forEach(ev=>el.addEventListener(ev,bump,{passive:true}));
+  el.addEventListener('scroll',()=>{if(performance.now()<wpause)wpos=el.scrollTop},{passive:true});
+  const tick=ts=>{const dt=Math.min(.05,(ts-last)/1000||0);last=ts;
+    if(wloop&&vis&&ts>wpause&&!document.hidden){wpos+=24*dt;if(wpos>=wloop)wpos-=wloop;el.scrollTop=wpos}
+    requestAnimationFrame(tick)};
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(tick)})();
+
+// ===== Panel rahasia: pembuat link tamu =====
+// buka dengan: ketuk tulisan "Made by..." di paling bawah 5x cepat, atau ketuk judul "Nayra 2 Tahun" di cover 5x
+const INVITE_TEXT=(n,l)=>`Halo ${n||'teman'}, kamu diundang ke ulang tahun ke-2 Nayra 🤠🎈\n\nMinggu, 8 November 2026 · pukul 15:00 WIB\nBurger King Buah Batu, Bandung\n\nBuka undangannya di sini:\n${l}`;
+const mk=n=>{n=n.trim();return location.origin+location.pathname+(n?'?to='+encodeURIComponent(n).replace(/%20/g,'+'):'')};
+const hist=()=>{try{return JSON.parse(localStorage.getItem('linkgen')||'[]')}catch(e){return[]}};
+async function copyText(t,msg){try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}toast(msg||'Tersalin ✅')}
+function drawHist(){const el=$('ghist');el.textContent='';const h=hist();
+  if(!h.length){el.textContent='Belum ada.';return}
+  h.forEach(n=>{const r=document.createElement('div');r.className='hrow';const sp=document.createElement('span');sp.textContent=n;
+    const b=document.createElement('button');b.className='btn s';b.textContent='Salin';b.onclick=()=>copyText(mk(n),'Link '+n+' disalin ✅');r.append(sp,b);el.appendChild(r)})}
+function remember(n){n=n.trim();if(!n)return;try{const h=hist().filter(x=>x!==n);h.unshift(n);localStorage.setItem('linkgen',JSON.stringify(h.slice(0,40)))}catch(e){}drawHist()}
+function upd(){const n=$('gn').value,l=mk(n);$('gl').value=l;$('gwa').href='https://wa.me/?text='+encodeURIComponent(INVITE_TEXT(n.trim(),l))}
+$('gn').oninput=upd;
+$('gcp').onclick=()=>{remember($('gn').value);copyText($('gl').value,'Link disalin ✅')};
+$('gms').onclick=()=>{const n=$('gn').value.trim();remember(n);copyText(INVITE_TEXT(n,mk(n)),'Pesan disalin ✅')};
+$('gwa').onclick=()=>remember($('gn').value);
+$('admX').onclick=()=>{$('adm').hidden=true};
+$('adm').addEventListener('pointerdown',e=>{if(e.target.id==='adm')$('adm').hidden=true});
+function openAdmin(){if(ADMIN_PIN&&prompt('PIN')!==ADMIN_PIN)return;setAuto(false);$('adm').hidden=false;upd();drawHist();navigator.vibrate&&navigator.vibrate(30);setTimeout(()=>$('gn').focus(),200)}
+[document.querySelector('.credit'),document.querySelector('#cover h1')].forEach(el=>{let c=0,tm;
+  el.addEventListener('click',()=>{c++;clearTimeout(tm);tm=setTimeout(()=>c=0,2000);if(c>=5){c=0;openAdmin()}})});
+
 $('openBtn').onclick=()=>{
   $('cover').classList.add('open');document.body.classList.remove('lock');document.body.classList.add('opened');
   scrollTo(0,0);setMus(true);burst(innerWidth/2,innerHeight*.6,46);rain(50);setTimeout(()=>toast("Tap balonnya untuk memecahkan 🎈"),1800);
