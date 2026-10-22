@@ -200,8 +200,16 @@ html{background:#bfe4f8}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ch,.blocks b{opacity:1}#flyer{display:none!important}}
 </style>
 </head>
-<body class="opened">
+<body class="lock">
 <div id="wall"></div>
+<div id="cover">
+  <div class="cloud"></div><div class="cloud"></div>
+  <div id="guest"><small>Kepada Yth.</small><b id="guestName"></b></div>
+  <small>Kamu diundang ke pesta ulang tahun</small>
+  <img class="cover-img" src="assets/main.jpg" alt="Nayra">
+  <h1>Nayra<br>2 Tahun</h1>
+  <button class="btn" id="openBtn">🤠 Buka Undangan</button>
+</div>
 
 
 <div id="walker"></div>
@@ -299,7 +307,7 @@ const toast=t=>{let e=$('toast');e.textContent=t;e.classList.add('show');setTime
 
 // nama tamu dari link: ?to=Nama+Tamu
 const guest=new URLSearchParams(location.search).get('to');
-if(guest){const g=document.createElement('div');g.className='paper gname';g.innerHTML='Kepada Yth.<b></b>';g.lastChild.textContent=guest;$('hai').querySelector('.wrap').prepend(g);$('rn').value=guest}
+if(guest){$('guest').style.display='block';$('guestName').textContent=guest;$('rn').value=guest}
 
 // kalender
 $('gcal').onclick=()=>open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(EVT.title)}&dates=${EVT.start}/${EVT.end}&location=${encodeURIComponent(EVT.loc)}`,'_blank');
@@ -497,11 +505,11 @@ if(!RM)requestAnimationFrame(frame);
     burst(e.clientX,e.clientY,14,null,['⭐','✨','💛']);toast('Howdy, partner! 🤠')})})();
 
 // open
-setMus(true); // dicoba langsung; kalau diblokir browser, mulai saat tap pertama
-const first=e=>{if(e.target.closest&&e.target.closest('#dock'))return;removeEventListener('pointerdown',first);if(bgm.paused)setMus(true)};
-addEventListener('pointerdown',first);
-setTimeout(()=>{burst(innerWidth/2,innerHeight*.5,40);rain(40);toast('Tap balonnya untuk memecahkan 🎈')},700);
-setTimeout(()=>setAuto(true),5000);
+$('openBtn').onclick=()=>{
+  $('cover').classList.add('open');document.body.classList.remove('lock');document.body.classList.add('opened');
+  scrollTo(0,0);setMus(true);burst(innerWidth/2,innerHeight*.6,46);rain(50);setTimeout(()=>toast("Tap balonnya untuk memecahkan 🎈"),1800);
+  setTimeout(()=>{$('cover').style.display='none';setTimeout(()=>setAuto(true),4500)},1000);
+};
 </script>
 </body>
 </html>
