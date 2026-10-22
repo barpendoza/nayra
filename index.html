@@ -628,6 +628,9 @@ function openAdmin(){try{setAuto(false)}catch(e){}$('adm').hidden=false;navigato
 [document.querySelector('.credit'),document.querySelector('#cover h1')].forEach(el=>{let c=0,tm;
   el.addEventListener('click',()=>{c++;clearTimeout(tm);tm=setTimeout(()=>c=0,2000);if(c>=5){c=0;openAdmin()}})});
 
+// buka panel langsung: tambah ?admin di belakang link (contoh: domainmu.vercel.app/?admin)
+if(/[?&]admin(=|&|$)/.test(location.search))setTimeout(openAdmin,300);
+
 $('openBtn').onclick=()=>{
   $('cover').classList.add('open');document.body.classList.remove('lock');document.body.classList.add('opened');
   scrollTo(0,0);setMus(true);burst(innerWidth/2,innerHeight*.6,46);rain(50);setTimeout(()=>toast("Tap balonnya untuk memecahkan 🎈"),1800);
