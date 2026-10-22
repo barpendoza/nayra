@@ -211,7 +211,7 @@ html{background:#bfe4f8}
 .wishes{-webkit-mask-image:linear-gradient(transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(transparent,#000 9%,#000 91%,transparent);padding-block:14px}
 .toast{z-index:90}
 #adm{position:fixed;inset:0;z-index:70;background:rgba(30,15,5,.65);display:flex;align-items:center;justify-content:center;padding:16px}
-#adm[hidden]{display:none}
+#adm[hidden],#pinBox[hidden],#genBox[hidden]{display:none}
 .ad-box{background:var(--paper);color:var(--ink);border:3px dashed var(--wood);border-radius:18px;padding:22px 18px 18px;width:100%;max-width:420px;max-height:90dvh;overflow:auto;overscroll-behavior:contain;position:relative;text-align:left;box-shadow:0 10px 0 rgba(0,0,0,.3);animation:pin .35s cubic-bezier(.3,1.5,.5,1)}
 @keyframes pin{from{transform:scale(.88);opacity:0}}
 .ad-box h3{font-family:'Baloo 2';font-size:1.4rem;color:var(--red)}
@@ -328,6 +328,12 @@ html{background:#bfe4f8}
   <div class="ad-box">
     <button class="ad-x" id="admX" aria-label="Tutup">✕</button>
     <h3>Buat Link Tamu</h3>
+    <div id="pinBox" hidden>
+      <label for="pin">Masukkan PIN</label>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN">
+      <div class="btns" style="margin-top:14px"><button class="btn s y" id="pinOk">Buka</button></div>
+    </div>
+    <div id="genBox">
     <label for="gn">Nama tamu</label>
     <input id="gn" maxlength="40" placeholder="mis. Akbar Putra" autocomplete="off">
     <label for="gl">Link undangan</label>
@@ -335,15 +341,16 @@ html{background:#bfe4f8}
     <div class="btns" style="margin-top:14px"><button class="btn s y" id="gcp">📋 Salin Link</button><button class="btn s" id="gms">💬 Salin Pesan</button><a class="btn s" id="gwa" target="_blank" rel="noopener">WhatsApp</a></div>
     <h4>Riwayat nama</h4>
     <div id="ghist"></div>
+    </div>
   </div>
 </div>
 <footer class="credit">Made by Initial A Project | Akbar</footer>
 
 <script>
 // === EDIT DI SINI ===
-const SUPABASE_URL = "https://ftmyyiqbhgeouwoiesax.supabase.co"; // contoh: https://abcdxyz.supabase.co
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0bXl5aXFiaGdlb3V3b2llc2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NTI4MzUsImV4cCI6MjEwODIyODgzNX0.WrtRYvnuq17kXYvFbLTvNJiisv27TR1jD3TbJbUrRBI"; // anon public key (BUKAN service_role)
-const ADMIN_PIN = "1234"; // opsional: isi PIN agar panel link terkunci (kosong = tanpa PIN)
+const SUPABASE_URL = ""; // contoh: https://abcdxyz.supabase.co
+const SUPABASE_KEY = ""; // anon public key (BUKAN service_role)
+const ADMIN_PIN = ""; // opsional: isi PIN agar panel link terkunci (kosong = tanpa PIN)
 // ====================
 const $=id=>document.getElementById(id),bgm=$('bgm');
 const EVT={title:"Ulang Tahun Nayra ke-2",loc:"Burger King Buah Batu, Bandung",start:"20261108T080000Z",end:"20261108T100000Z"}; // 15:00-17:00 WIB
@@ -612,7 +619,12 @@ $('gms').onclick=()=>{const n=$('gn').value.trim();remember(n);copyText(INVITE_T
 $('gwa').onclick=()=>remember($('gn').value);
 $('admX').onclick=()=>{$('adm').hidden=true};
 $('adm').addEventListener('pointerdown',e=>{if(e.target.id==='adm')$('adm').hidden=true});
-function openAdmin(){if(ADMIN_PIN&&prompt('PIN')!==ADMIN_PIN)return;setAuto(false);$('adm').hidden=false;upd();drawHist();navigator.vibrate&&navigator.vibrate(30);setTimeout(()=>$('gn').focus(),200)}
+let unlocked=false;
+function showGen(){$('pinBox').hidden=true;$('genBox').hidden=false;upd();drawHist();setTimeout(()=>$('gn').focus(),200)}
+function tryPin(){if($("pin").value.trim()===String(ADMIN_PIN).trim()){unlocked=true;$('pin').value='';showGen()}else{toast('PIN salah ❌');$('pin').value='';$('pin').focus()}}
+$('pinOk').onclick=tryPin;$('pin').onkeydown=e=>{if(e.key==='Enter')tryPin()};
+function openAdmin(){try{setAuto(false)}catch(e){}$('adm').hidden=false;navigator.vibrate&&navigator.vibrate(30);
+  if(ADMIN_PIN&&!unlocked){$('genBox').hidden=true;$('pinBox').hidden=false;setTimeout(()=>$('pin').focus(),200)}else showGen()}
 [document.querySelector('.credit'),document.querySelector('#cover h1')].forEach(el=>{let c=0,tm;
   el.addEventListener('click',()=>{c++;clearTimeout(tm);tm=setTimeout(()=>c=0,2000);if(c>=5){c=0;openAdmin()}})});
 
