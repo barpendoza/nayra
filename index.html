@@ -197,6 +197,10 @@ html{background:#bfe4f8}
 .cl{display:none}
 .gname{margin-bottom:16px;padding:10px 16px!important;font-size:.95rem}
 .gname b{font-family:'Baloo 2';font-size:1.35rem;color:var(--red);display:block;line-height:1.2}
+.wa-txt{font-size:.85rem;margin-bottom:8px;color:rgba(251,241,217,.95)}
+.wa-foot{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;padding:9px 16px;border-radius:999px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.wa-foot svg{width:20px;height:20px;fill:#fff;flex:none}
+.wa-foot:active{transform:scale(.97)}
 .credit{background:#4d2b14;color:rgba(251,241,217,.8);text-align:center;font-size:.8rem;padding:14px 18px calc(14px + env(safe-area-inset-bottom));position:relative;z-index:2}
 .wh{margin:24px 0 10px;font-family:'Baloo 2';font-size:1.1rem;color:var(--yellow)}
 .wishes{max-height:340px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;text-align:left;display:flex;flex-direction:column;gap:10px;padding:2px 6px 2px 0}
@@ -344,13 +348,19 @@ html{background:#bfe4f8}
     </div>
   </div>
 </div>
-<footer class="credit">Made by Initial A Project | Akbar</footer>
+<footer class="credit">
+  <div class="wa-txt">Anda mau buat undangan digital custom, bisa hubungi WA ini</div>
+  <a class="wa-foot" id="waHub" target="_blank" rel="noopener" aria-label="Hubungi via WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-1.6-.8-2.7-1.4-3.7-3.2-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.200z"/></svg>Chat via WhatsApp</a>
+  <div>Made by Initial A Project | Akbar</div>
+</footer>
 
 <script>
 // === EDIT DI SINI ===
-const SUPABASE_URL = "https://ftmyyiqbhgeouwoiesax.supabase.co"; // contoh: https://abcdxyz.supabase.co
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0bXl5aXFiaGdlb3V3b2llc2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NTI4MzUsImV4cCI6MjEwODIyODgzNX0.WrtRYvnuq17kXYvFbLTvNJiisv27TR1jD3TbJbUrRBI"; // anon public key (BUKAN service_role)
+const SUPABASE_URL = ""; // contoh: https://abcdxyz.supabase.co
+const SUPABASE_KEY = ""; // anon public key (BUKAN service_role)
 const ADMIN_PIN = "1234"; // opsional: isi PIN agar panel link terkunci (kosong = tanpa PIN)
+const WA_NUMBER = "6282345679861"; // format internasional, tanpa + / 0 di depan
+const WA_TEXT = "Halo, saya mau buat undangan digital custom 😊";
 // ====================
 const $=id=>document.getElementById(id),bgm=$('bgm');
 const EVT={title:"Ulang Tahun Nayra ke-2",loc:"Burger King Buah Batu, Bandung",start:"20261108T080000Z",end:"20261108T100000Z"}; // 15:00-17:00 WIB
@@ -359,6 +369,10 @@ const toast=t=>{let e=$('toast');e.textContent=t;e.classList.add('show');setTime
 // nama tamu dari link: ?to=Nama+Tamu
 const guest=new URLSearchParams(location.search).get('to');
 if(guest){$('guest').style.display='block';$('guestName').textContent=guest;$('rn').value=guest}
+
+// tombol WhatsApp di footer
+$('waHub').href='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(WA_TEXT);
+$('waHub').addEventListener('click',e=>e.stopPropagation());
 
 // kalender
 $('gcal').onclick=()=>open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(EVT.title)}&dates=${EVT.start}/${EVT.end}&location=${encodeURIComponent(EVT.loc)}`,'_blank');
