@@ -344,7 +344,7 @@ let auto=false,raf,last=0,pos=0;
 function tick(ts){
   if(!auto)return;
   const dt=ts-last;last=ts;
-  pos+=dt*0.035; // kecepatan (px/ms) - ubah angka ini kalau mau lebih cepat/lambat
+  pos+=dt*0.06; // kecepatan (px/ms) - ubah angka ini kalau mau lebih cepat/lambat
   scrollTo(0,pos);
   if(pos>=document.body.scrollHeight-innerHeight-2)return setAuto(false);
   raf=requestAnimationFrame(tick);
