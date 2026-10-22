@@ -123,7 +123,7 @@ body.opened #hero img{animation:heroin 1.3s cubic-bezier(.2,1.3,.4,1) both}
 .tap{font-size:.8rem;opacity:.7;display:block;margin-top:6px}
 
 /* ===== v3: scroll-driven & toy world ===== */
-#flyer{position:fixed;left:0;top:0;width:88px;height:98px;z-index:39;display:none;touch-action:pan-y;will-change:transform}
+#flyer{position:fixed;left:0;top:0;width:120px;height:108px;z-index:39;display:none;touch-action:pan-y;will-change:transform}
 body.opened #flyer{display:block}
 #flyer .in2{width:100%;height:100%;filter:drop-shadow(0 8px 6px rgba(0,0,0,.25))}
 #flyer img,#flyer svg{width:100%;height:100%;object-fit:contain;display:block}
@@ -197,6 +197,7 @@ html{background:#bfe4f8}
 .cl{display:none}
 .gname{margin-bottom:16px;padding:10px 16px!important;font-size:.95rem}
 .gname b{font-family:'Baloo 2';font-size:1.35rem;color:var(--red);display:block;line-height:1.2}
+.credit{background:#4d2b14;color:rgba(251,241,217,.8);text-align:center;font-size:.8rem;padding:14px 18px calc(14px + env(safe-area-inset-bottom));position:relative;z-index:2}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ch,.blocks b{opacity:1}#flyer{display:none!important}}
 </style>
 </head>
@@ -297,6 +298,8 @@ html{background:#bfe4f8}
   </div>
 </section>
 
+<footer class="credit">Made by Initial A Project | Akbar</footer>
+
 <script>
 // === EDIT DI SINI ===
 const WA_NUMBER = "628xxxxxxxxxx"; // nomor WA tanpa + dan 0 di depan
@@ -344,7 +347,7 @@ let auto=false,raf,last=0,pos=0;
 function tick(ts){
   if(!auto)return;
   const dt=ts-last;last=ts;
-  pos+=dt*0.06; // kecepatan (px/ms) - ubah angka ini kalau mau lebih cepat/lambat
+  pos+=dt*0.035; // kecepatan (px/ms) - ubah angka ini kalau mau lebih cepat/lambat
   scrollTo(0,pos);
   if(pos>=document.body.scrollHeight-innerHeight-2)return setAuto(false);
   raf=requestAnimationFrame(tick);
@@ -455,18 +458,18 @@ function trail(x,y){const p=document.createElement('div');p.className='pc';p.tex
   p.animate([{transform:'translate(0,0)',opacity:.9},{transform:`translate(${rnd(-14,14)}px,${rnd(30,60)}px) scale(.3)`,opacity:0}],{duration:650}).onfinish=()=>p.remove()}
 fl.addEventListener('pointerdown',()=>{
   flIn.animate([{transform:'rotate(0)'},{transform:'rotate(-360deg) scale(1.25)'}],{duration:900,easing:'cubic-bezier(.3,1.3,.5,1)'});
-  const r=fl.getBoundingClientRect();burst(r.left+44,r.top+50,18,null,['⭐','✨','🚀']);
+  const r=fl.getBoundingClientRect();burst(r.left+60,r.top+54,18,null,['⭐','✨','🚀']);
   toast(['Wuusshh! 🚀','Ayo ke pesta Nayra! 🎉','Terbang tinggi! ⭐'][Math.random()*3|0])});
 
 const papers=[...document.querySelectorAll('.paper')],frs=[...document.querySelectorAll('.fr')],hero=document.querySelector('#hero img'),hint=document.querySelector('.hint'),bts=[...document.querySelectorAll('.bt')];
 function frame(ts){
   const sy=scrollY,vh=innerHeight,vw=innerWidth,H=Math.max(1,document.body.scrollHeight-vh),p=sy/H,t=ts/1000;
-  const tx=vw*.5+vw*.32*Math.sin(p*Math.PI*8)+Math.cos(t*1.3)*7-44,ty=vh*.52+vh*.26*Math.sin(p*Math.PI*6+1)+Math.sin(t*2.1)*9-49;
+  const tx=vw*.5+vw*.32*Math.sin(p*Math.PI*8)+Math.cos(t*1.3)*7-60,ty=vh*.52+vh*.26*Math.sin(p*Math.PI*6+1)+Math.sin(t*2.1)*9-54;
   fx+=(tx-fx)*.06;fy+=(ty-fy)*.06;const vx=fx-pfx,vy=fy-pfy;pfx=fx;pfy=fy;
   wall.style.transform=`scale(1.1) translateY(${-p*2.5}%) rotate(${Math.sin(t*.35)*.5}deg)`;
   fl.style.transform=`translate(${fx}px,${fy}px)`;
   flIn.style.rotate=Math.max(-32,Math.min(32,vx*2.4+vy*.6))+'deg';
-  if(Math.hypot(vx,vy)>2.2&&!(fc++%3))trail(fx+44,fy+90);
+  if(Math.hypot(vx,vy)>2.2&&!(fc++%3))trail(fx+60,fy+100);
   if(sy<vh*1.2){hero.style.translate=`0 ${sy*.22}px`;hint.style.opacity=Math.max(0,1-sy/160)}
   for(const e of papers){const r=e.getBoundingClientRect();if(r.bottom<-50||r.top>vh+50)continue;
     const d=((r.top+r.height/2)-vh/2)/vh;e.style.rotate=(d*-4)+'deg';e.style.scale=1-Math.min(Math.abs(d),1)*.07}
