@@ -7,6 +7,7 @@
 <meta property="og:title" content="Undangan Ulang Tahun Nayra ke-2">
 <meta property="og:description" content="Minggu, 8 November 2026 · Burger King Buah Batu Bandung">
 <meta property="og:image" content="assets/main.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🤠%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -72,6 +73,19 @@ section{min-height:100svh;padding:72px 22px;display:flex;flex-direction:column;a
 body.opened .fab{display:block}
 #mus{bottom:76px}#auto{bottom:18px}
 .fab.on{background:var(--red);color:#fff;box-shadow:0 4px 0 #8f1616}
+#guest{background:var(--paper);border:2px dashed var(--wood);border-radius:12px;padding:8px 18px;display:none}
+#guest b{font-family:'Baloo 2';font-size:1.3rem;color:var(--red);display:block;line-height:1.2}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.btn.s{font-size:.95rem;padding:9px 18px}
+.mapf{width:100%;height:230px;border:4px solid var(--wood);border-radius:14px;margin-bottom:16px;background:#ddd}
+.rsvp{background:rgba(255,255,255,.08);border-radius:16px;padding:20px;text-align:left;margin-top:8px}
+.rsvp label{display:block;font-weight:700;margin:12px 0 4px;font-size:.9rem}
+.rsvp input,.rsvp select,.rsvp textarea{width:100%;padding:11px 12px;border-radius:10px;border:2px solid var(--yellow);background:var(--paper);color:var(--ink);font:inherit}
+.rsvp textarea{min-height:76px;resize:vertical}
+.rsvp .btn{width:100%;margin-top:18px}
+.toast{position:fixed;left:50%;bottom:90px;translate:-50% 0;background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;z-index:60;opacity:0;pointer-events:none;transition:opacity .3s}
+.toast.show{opacity:1}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -79,6 +93,7 @@ body.opened .fab{display:block}
 
 <div id="cover">
   <div class="cloud"></div><div class="cloud"></div>
+  <div id="guest"><small>Kepada Yth.</small><b id="guestName"></b></div>
   <small>Kamu diundang ke pesta ulang tahun</small>
   <img class="cover-img" src="assets/main.jpg" alt="Nayra">
   <h1>Nayra<br>2 Tahun</h1>
@@ -87,6 +102,7 @@ body.opened .fab{display:block}
 
 <button class="fab" id="mus" aria-label="Musik">🎵</button>
 <button class="fab" id="auto" aria-label="Scroll otomatis">⏬</button>
+<div class="toast" id="toast" role="status"></div>
 <audio id="bgm" src="assets/music.mp3" loop preload="none"></audio>
 
 <section id="hero">
@@ -114,6 +130,7 @@ body.opened .fab{display:block}
       <div class="row"><small>🕒 Waktu</small><b>Pukul 15:00 WIB</b></div>
       <div class="row"><small>📍 Tempat</small><b>Burger King Buah Batu, Bandung</b></div>
     </div>
+    <div class="btns"><button class="btn s y" id="gcal">📆 Simpan ke Kalender</button><button class="btn s" id="ics">⬇ File .ics (iPhone)</button></div>
     <div class="cd" id="cd"><div><b id="d">0</b><span>hari</span></div><div><b id="h">0</b><span>jam</span></div><div><b id="m">0</b><span>menit</span></div><div><b id="s">0</b><span>detik</span></div></div>
   </div>
 </section>
@@ -135,6 +152,7 @@ body.opened .fab{display:block}
     <div class="pin">📍</div>
     <div class="sign disp">Lokasi Pesta</div>
     <div class="paper">
+      <iframe class="mapf" title="Peta lokasi" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Burger+King+Buah+Batu+Bandung&hl=id&z=16&output=embed"></iframe>
       <h3 style="font-size:1.5rem">Burger King Buah Batu</h3>
       <p style="margin:6px 0 18px">Bandung</p>
       <a class="btn" target="_blank" rel="noopener" href="https://maps.app.goo.gl/r9ykzMJTpUQv8rpy6">Buka Google Maps</a>
@@ -145,8 +163,16 @@ body.opened .fab{display:block}
 <section id="end">
   <div class="wrap rev">
     <h2>Jangan lupa hadir ya! 💛</h2>
-    <p style="margin:12px 0 24px">Konfirmasi kehadiranmu lewat WhatsApp.</p>
-    <a class="btn y" id="wa" target="_blank" rel="noopener" href="#">Konfirmasi Hadir</a>
+    <p style="margin:12px 0 10px">Konfirmasi kehadiranmu, ya. Pesan akan terbuka di WhatsApp.</p>
+    <div class="rsvp">
+      <label for="rn">Nama</label><input id="rn" autocomplete="name">
+      <label for="ra">Kehadiran</label>
+      <select id="ra"><option>Hadir</option><option>Belum bisa hadir</option></select>
+      <label for="rj">Jumlah orang yang datang</label><input id="rj" type="number" min="1" max="10" value="1">
+      <label for="rm">Ucapan untuk Nayra (opsional)</label><textarea id="rm"></textarea>
+      <button class="btn y" id="wa">Kirim via WhatsApp</button>
+    </div>
+    <button class="btn s" id="share" style="margin-top:22px">🔗 Bagikan undangan</button>
     <p style="margin-top:34px;opacity:.8">Dengan cinta, keluarga Nayra</p>
   </div>
 </section>
@@ -154,10 +180,34 @@ body.opened .fab{display:block}
 <script>
 // === EDIT DI SINI ===
 const WA_NUMBER = "628xxxxxxxxxx"; // nomor WA tanpa + dan 0 di depan
-const WA_TEXT = "Halo, saya akan hadir di ulang tahun Nayra ke-2 🤠";
 // ====================
 const $=id=>document.getElementById(id),bgm=$('bgm');
-$('wa').href=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_TEXT)}`;
+const EVT={title:"Ulang Tahun Nayra ke-2",loc:"Burger King Buah Batu, Bandung",start:"20261108T080000Z",end:"20261108T100000Z"}; // 15:00-17:00 WIB
+const toast=t=>{let e=$('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)};
+
+// nama tamu dari link: ?to=Nama+Tamu
+const guest=new URLSearchParams(location.search).get('to');
+if(guest){$('guest').style.display='block';$('guestName').textContent=guest;$('rn').value=guest}
+
+// kalender
+$('gcal').onclick=()=>open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(EVT.title)}&dates=${EVT.start}/${EVT.end}&location=${encodeURIComponent(EVT.loc)}`,'_blank');
+$('ics').onclick=()=>{
+  const ics=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nDTSTART:${EVT.start}\r\nDTEND:${EVT.end}\r\nSUMMARY:${EVT.title}\r\nLOCATION:${EVT.loc}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='ulang-tahun-nayra.ics';a.click()};
+
+// RSVP via WA
+$('wa').onclick=()=>{
+  const n=$('rn').value.trim();if(!n){toast('Isi nama dulu ya');$('rn').focus();return}
+  const hadir=$('ra').value==='Hadir';
+  let t=`Halo, saya ${n}. ${hadir?`Saya akan hadir di ulang tahun Nayra ke-2 (${$('rj').value} orang) 🤠`:'Mohon maaf, saya belum bisa hadir di ulang tahun Nayra ke-2.'}`;
+  const m=$('rm').value.trim();if(m)t+=`\n\nUcapan: ${m}`;
+  open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(t)}`,'_blank')};
+
+// bagikan
+$('share').onclick=async()=>{
+  const u=location.origin+location.pathname;
+  if(navigator.share){try{await navigator.share({title:EVT.title,url:u});return}catch(e){}}
+  try{await navigator.clipboard.writeText(u);toast('Link disalin')}catch(e){toast(u)}};
 
 // countdown
 const target=new Date('2026-11-08T15:00:00+07:00');
