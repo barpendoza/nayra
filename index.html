@@ -329,7 +329,7 @@ html{background:#bfe4f8}
     <button class="ad-x" id="admX" aria-label="Tutup">✕</button>
     <h3>Buat Link Tamu</h3>
     <div id="pinBox" hidden>
-      <label for="pin">1234</label>
+      <label for="pin">Masukkan PIN</label>
       <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN">
       <div class="btns" style="margin-top:14px"><button class="btn s y" id="pinOk">Buka</button></div>
     </div>
@@ -350,7 +350,7 @@ html{background:#bfe4f8}
 // === EDIT DI SINI ===
 const SUPABASE_URL = ""; // contoh: https://abcdxyz.supabase.co
 const SUPABASE_KEY = ""; // anon public key (BUKAN service_role)
-const ADMIN_PIN = ""; // opsional: isi PIN agar panel link terkunci (kosong = tanpa PIN)
+const ADMIN_PIN = "1234"; // opsional: isi PIN agar panel link terkunci (kosong = tanpa PIN)
 // ====================
 const $=id=>document.getElementById(id),bgm=$('bgm');
 const EVT={title:"Ulang Tahun Nayra ke-2",loc:"Burger King Buah Batu, Bandung",start:"20261108T080000Z",end:"20261108T100000Z"}; // 15:00-17:00 WIB
