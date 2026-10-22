@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <title>Undangan Ulang Tahun Nayra ke-2</title>
 <meta property="og:title" content="Undangan Ulang Tahun Nayra ke-2">
 <meta property="og:description" content="Minggu, 8 November 2026 · Burger King Buah Batu Bandung">
@@ -171,10 +171,31 @@ section{min-height:100dvh;padding:64px 18px 56px}
 .toast{bottom:calc(90px + env(safe-area-inset-bottom));max-width:86vw;text-align:center}
 @media (max-width:360px){.sign.disp{font-size:1.1rem;padding:7px 16px}#gal h2{font-size:1.4rem}#end h2{font-size:1.5rem}#cover h1{font-size:1.8rem}.row b{font-size:1.15rem}.btn{padding:11px 20px}}
 @media (min-width:700px){body{max-width:560px;margin:0 auto}}
+
+/* ===== v5: dock tombol + anti-zoom ===== */
+*{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select{-webkit-user-select:text;user-select:text;font-size:16px!important}
+#dock{position:fixed;right:calc(12px + env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));z-index:46;display:none;flex-direction:column;align-items:center;gap:12px}
+body.opened #dock{display:flex}
+body.opened #dock .fab{position:static;display:grid;place-items:center;width:50px;height:50px;padding:0;margin:0;line-height:1;font-size:1.4rem;transition:transform .15s}
+#dock .fab:active{transform:scale(.9)}
+
+/* ===== v6: wallpaper Toy Story ===== */
+html{background:#bfe4f8}
+#wall{position:fixed;top:0;bottom:0;left:50%;width:min(100vw,560px);translate:-50% 0;z-index:-1;background:url(assets/bg.webp) center/cover no-repeat;transform:scale(1.1);will-change:transform}
+#wall::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.12)}
+#hero,#hai,#info,#gal,#map{background:transparent}
+#cover{background:url(assets/bg.webp) center/cover no-repeat,#bfe4f8}
+.cl,.cloud{display:none}
+#walker{position:fixed;left:0;bottom:calc(6px + env(safe-area-inset-bottom));width:clamp(70px,22vw,100px);z-index:38;display:none;will-change:transform}
+body.opened #walker.ok{display:block}
+#walker img{width:100%;display:block;filter:drop-shadow(0 6px 4px rgba(0,0,0,.25))}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ch,.blocks b{opacity:1}#flyer{display:none!important}}
 </style>
 </head>
 <body class="lock">
+<div id="wall"></div>
 
 <div id="cover">
   <div class="cloud"></div><div class="cloud"></div>
@@ -185,10 +206,10 @@ section{min-height:100dvh;padding:64px 18px 56px}
   <button class="btn" id="openBtn">🤠 Buka Undangan</button>
 </div>
 
+<div id="walker"></div>
 <div id="flyer"><div class="in2"></div></div>
 <div id="sky"></div><div id="score">🎈 0</div><div id="prog"><i id="pi"></i></div>
-<button class="fab" id="mus" aria-label="Musik">🎵</button>
-<button class="fab" id="auto" aria-label="Scroll otomatis">⏬</button>
+<div id="dock"><button class="fab" id="mus" aria-label="Musik">🎵</button><button class="fab" id="auto" aria-label="Scroll otomatis">⏬</button></div>
 <div class="toast" id="toast" role="status"></div>
 <audio id="bgm" src="assets/music.mp3" loop preload="none"></audio>
 
@@ -420,7 +441,7 @@ document.querySelectorAll('.blocks b').forEach(b=>b.onclick=e=>{
   b.animate([{translate:'0 0'},{translate:'0 -42px',rotate:'-12deg'},{translate:'0 0'}],{duration:520,easing:'cubic-bezier(.3,1.5,.5,1)'});
   burst(e.clientX,e.clientY,8,null,['⭐','✨'])});
 
-const fl=$('flyer'),flIn=fl.firstChild,
+const wall=$('wall'),fl=$('flyer'),flIn=fl.firstChild,
 SVG=`<svg viewBox="0 0 100 112"><g class="fl"><path d="M40 86Q50 120 60 86Z" fill="#ffb300"/><path d="M45 86Q50 106 55 86Z" fill="#fff3a0"/></g><path d="M20 52L2 72L26 68Z M80 52L98 72L74 68Z" fill="#ff7a1a"/><rect x="16" y="52" width="14" height="26" rx="7" fill="#fff"/><rect x="70" y="52" width="14" height="26" rx="7" fill="#fff"/><rect x="29" y="46" width="42" height="44" rx="15" fill="#fff"/><rect x="29" y="70" width="42" height="8" fill="#2fb7a8"/><polygon points="50,50 52.5,56 59,56.5 54,60.5 55.5,67 50,63.5 44.5,67 46,60.5 41,56.5 47.5,56" fill="#ffd21f"/><circle cx="50" cy="30" r="25" fill="#f4f6f8" stroke="#c5ced6" stroke-width="3"/><ellipse cx="50" cy="31" rx="17" ry="14" fill="#2f4f8f"/><ellipse cx="44" cy="26" rx="6" ry="3" fill="#fff" opacity=".6"/></svg>`;
 const im=new Image();im.alt='';im.onerror=()=>{flIn.innerHTML=SVG};im.src='assets/flyer.png';flIn.appendChild(im);
 let fx=-160,fy=innerHeight*.4,pfx=fx,pfy=fy,fc=0;
@@ -436,6 +457,7 @@ function frame(ts){
   const sy=scrollY,vh=innerHeight,vw=innerWidth,H=Math.max(1,document.body.scrollHeight-vh),p=sy/H,t=ts/1000;
   const tx=vw*.5+vw*.32*Math.sin(p*Math.PI*8)+Math.cos(t*1.3)*7-44,ty=vh*.52+vh*.26*Math.sin(p*Math.PI*6+1)+Math.sin(t*2.1)*9-49;
   fx+=(tx-fx)*.06;fy+=(ty-fy)*.06;const vx=fx-pfx,vy=fy-pfy;pfx=fx;pfy=fy;
+  wall.style.transform=`scale(1.1) translateY(${-p*2.5}%) rotate(${Math.sin(t*.35)*.5}deg)`;
   fl.style.transform=`translate(${fx}px,${fy}px)`;
   flIn.style.rotate=Math.max(-32,Math.min(32,vx*2.4+vy*.6))+'deg';
   if(Math.hypot(vx,vy)>2.2&&!(fc++%3))trail(fx+44,fy+90);
@@ -457,6 +479,24 @@ if(!RM)requestAnimationFrame(frame);
     c.addEventListener('pointerdown',e=>{im.animate([{transform:'translateY(0)'},{transform:'translateY(-40px) rotate(-8deg)'},{transform:'translateY(0)'}],{duration:550,easing:'cubic-bezier(.3,1.5,.5,1)'});
       burst(e.clientX,e.clientY,14,null,['⭐','✨','💛']);toast(say);navigator.vibrate&&navigator.vibrate(20)})};
   im.src='assets/characters/'+f+'.png'});
+
+// anti zoom (pinch iOS)
+['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,ev=>ev.preventDefault()));
+
+// ===== v6: karakter berjalan (walker.png buatan sendiri) =====
+(()=>{const w=$('walker'),im=new Image();im.alt='';
+  im.onload=()=>{w.appendChild(im);w.classList.add('ok');
+    let x=-140,dir=1,pause=0,last=0;
+    const tick=ts=>{const dt=Math.min(.05,(ts-last)/1000||0);last=ts;const vw=innerWidth,ww=w.offsetWidth||80;
+      if(pause>0)pause-=dt;else{x+=dir*48*dt;if(dir>0&&x>vw-ww+10){dir=-1;pause=1.5}else if(dir<0&&x<-10){dir=1;pause=1.5}}
+      const t=ts/1000,st=pause>0?0:1;
+      w.style.transform=`translate(${x}px,0)`;
+      im.style.transform=`scaleX(${dir}) translateY(${-Math.abs(Math.sin(t*9))*7*st}px) rotate(${Math.sin(t*9)*5*st}deg)`;
+      requestAnimationFrame(tick)};
+    if(!RM)requestAnimationFrame(tick)};
+  im.src='assets/characters/walker.png';
+  w.addEventListener('pointerdown',e=>{w.animate([{translate:'0 0'},{translate:'0 -55px'},{translate:'0 0'}],{duration:550,easing:'cubic-bezier(.3,1.5,.5,1)'});
+    burst(e.clientX,e.clientY,14,null,['⭐','✨','💛']);toast('Howdy, partner! 🤠')})})();
 
 // open
 $('openBtn').onclick=()=>{
